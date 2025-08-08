@@ -19,12 +19,12 @@ import {
 } from "lucide-react";
 
 interface HomePageProps {
-  onDocumentUpload: (file: File) => void;
-  uploadedDocument?: any;
+  onDocumentUpload: (files: File[], persona?: string, jobToBeDone?: string) => void;
+  uploadedDocuments?: any[];
   isLoading?: boolean;
 }
 
-export const HomePage = ({ onDocumentUpload, uploadedDocument, isLoading }: HomePageProps) => {
+export const HomePage = ({ onDocumentUpload, uploadedDocuments, isLoading }: HomePageProps) => {
   const [isVoiceEnabled, setIsVoiceEnabled] = useState(false);
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
 
@@ -98,7 +98,7 @@ export const HomePage = ({ onDocumentUpload, uploadedDocument, isLoading }: Home
     console.log("Section clicked:", section);
   };
 
-  if (uploadedDocument) {
+  if (uploadedDocuments && uploadedDocuments.length > 0) {
     return (
       <div className="min-h-screen bg-background">
         <Marquee 
@@ -107,7 +107,7 @@ export const HomePage = ({ onDocumentUpload, uploadedDocument, isLoading }: Home
         />
         <div className="container mx-auto px-4 py-8">
           <DocumentViewer
-            document={uploadedDocument}
+            documents={uploadedDocuments}
             onSectionClick={handleSectionClick}
             isVoiceEnabled={isVoiceEnabled}
             onToggleVoice={() => setIsVoiceEnabled(!isVoiceEnabled)}

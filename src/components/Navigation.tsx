@@ -39,7 +39,7 @@ export const Navigation = ({ onAccessibilityOpen, onSignOut, user }: NavigationP
 
           {/* Center Navigation */}
           <div className="hidden md:flex items-center space-x-6">
-            <Button variant="ghost" size="sm" className="text-sm">
+            <Button variant="ghost" size="sm" className="text-sm" onClick={() => window.location.reload()}>
               <Home className="w-4 h-4 mr-2" />
               Home
             </Button>

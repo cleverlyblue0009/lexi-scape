@@ -4,6 +4,7 @@ import { Navigation } from "@/components/Navigation";
 import { HomePage } from "@/components/HomePage";
 import { AccessibilityPanel } from "@/components/AccessibilityPanel";
 import { useToast } from "@/hooks/use-toast";
+import { documentIntelligenceService, ProcessedDocument } from "@/services/documentIntelligence";
 
 interface User {
   name: string;
@@ -24,25 +25,12 @@ interface AccessibilitySettings {
   readingSpeed: number;
 }
 
-interface DocumentData {
-  title: string;
-  outline: Array<{
-    level: string;
-    text: string;
-    page: number;
-    content?: string;
-  }>;
-  metadata: {
-    pages: number;
-    language: string;
-    estimatedReadingTime: number;
-  };
-}
+// Remove DocumentData interface as we now use ProcessedDocument from service
 
 const Index = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isAccessibilityOpen, setIsAccessibilityOpen] = useState(false);
-  const [uploadedDocument, setUploadedDocument] = useState<DocumentData | null>(null);
+  const [uploadedDocuments, setUploadedDocuments] = useState<ProcessedDocument[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   
@@ -108,47 +96,43 @@ const Index = () => {
 
   const handleSignOut = () => {
     setUser(null);
-    setUploadedDocument(null);
+    setUploadedDocuments([]);
     toast({
       title: "Signed out",
       description: "Come back soon!",
     });
   };
 
-  const handleDocumentUpload = async (file: File) => {
+  const handleDocumentUpload = async (files: File[], persona?: string, jobToBeDone?: string) => {
     setIsLoading(true);
     toast({
-      title: "Processing document...",
-      description: "Extracting intelligence from your PDF",
+      title: "Processing documents...",
+      description: `Analyzing ${files.length} document(s) with AI intelligence`,
     });
 
-    // Simulate PDF processing (integrate with your Python backend here)
-    setTimeout(() => {
-      const mockDocument: DocumentData = {
-        title: file.name.replace('.pdf', ''),
-        outline: [
-          { level: "H1", text: "Introduction", page: 1, content: "This is the introduction section of the document..." },
-          { level: "H2", text: "Background", page: 2, content: "Background information and context..." },
-          { level: "H2", text: "Methodology", page: 4, content: "Research methodology and approach..." },
-          { level: "H1", text: "Results", page: 6, content: "Results and findings from the analysis..." },
-          { level: "H2", text: "Data Analysis", page: 7, content: "Detailed data analysis and interpretation..." },
-          { level: "H1", text: "Conclusion", page: 10, content: "Summary and conclusions..." },
-        ],
-        metadata: {
-          pages: 12,
-          language: "English",
-          estimatedReadingTime: 15
-        }
-      };
+    try {
+      const processedDocuments = await documentIntelligenceService.processDocuments(
+        files, 
+        persona || "General User", 
+        jobToBeDone || "Document Analysis"
+      );
       
-      setUploadedDocument(mockDocument);
+      setUploadedDocuments(processedDocuments);
       setIsLoading(false);
       
       toast({
-        title: "Document processed successfully!",
-        description: "Your PDF is now ready for intelligent analysis",
+        title: "Documents processed successfully!",
+        description: `${processedDocuments.length} document(s) ready for intelligent analysis`,
       });
-    }, 3000);
+    } catch (error) {
+      console.error('Error processing documents:', error);
+      setIsLoading(false);
+      toast({
+        title: "Processing failed",
+        description: "There was an error processing your documents. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleAccessibilitySettingsChange = (newSettings: Partial<AccessibilitySettings>) => {
@@ -169,7 +153,7 @@ const Index = () => {
       
       <HomePage
         onDocumentUpload={handleDocumentUpload}
-        uploadedDocument={uploadedDocument}
+        uploadedDocuments={uploadedDocuments}
         isLoading={isLoading}
       />
       

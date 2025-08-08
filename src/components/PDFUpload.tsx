@@ -5,26 +5,28 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 
 interface PDFUploadProps {
-  onUpload: (file: File) => void;
+  onUpload: (files: File[], persona?: string, jobToBeDone?: string) => void;
   isLoading?: boolean;
 }
 
 export const PDFUpload = ({ onUpload, isLoading = false }: PDFUploadProps) => {
   const [isDragActive, setIsDragActive] = useState(false);
+  const [persona, setPersona] = useState("");
+  const [jobToBeDone, setJobToBeDone] = useState("");
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    const pdfFile = acceptedFiles.find(file => file.type === 'application/pdf');
-    if (pdfFile) {
-      onUpload(pdfFile);
+    const pdfFiles = acceptedFiles.filter(file => file.type === 'application/pdf');
+    if (pdfFiles.length > 0) {
+      onUpload(pdfFiles, persona, jobToBeDone);
     }
-  }, [onUpload]);
+  }, [onUpload, persona, jobToBeDone]);
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: {
       'application/pdf': ['.pdf']
     },
-    multiple: false,
+    multiple: true,
     onDragEnter: () => setIsDragActive(true),
     onDragLeave: () => setIsDragActive(false),
     onDropAccepted: () => setIsDragActive(false),
@@ -85,10 +87,29 @@ export const PDFUpload = ({ onUpload, isLoading = false }: PDFUploadProps) => {
                   {isDragActive ? 'Drop your PDF here' : 'Upload PDF Document'}
                 </h3>
                 <p className="text-sm text-muted-foreground">
-                  Drag & drop or click to select a PDF file
+                  Drag & drop or click to select PDF files (multiple supported)
                 </p>
+                
+                {/* Persona and Job inputs */}
+                <div className="w-full max-w-md space-y-3 mt-4">
+                  <input
+                    type="text"
+                    placeholder="Your role (e.g., Travel Planner, Research Analyst)"
+                    value={persona}
+                    onChange={(e) => setPersona(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                  />
+                  <input
+                    type="text"
+                    placeholder="Job to be done (e.g., Plan a 4-day trip to Paris)"
+                    value={jobToBeDone}
+                    onChange={(e) => setJobToBeDone(e.target.value)}
+                    className="w-full px-3 py-2 text-sm border rounded-md bg-background"
+                  />
+                </div>
+                
                 <Button variant="outline" className="mt-4">
-                  Select File
+                  Select Files
                 </Button>
               </>
             )}

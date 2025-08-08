@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { FileText, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
+import { FileText, Mail, Lock, User, Eye, EyeOff, Brain, Zap } from "lucide-react";
 
 interface AuthProps {
   onSignIn: (user: { name: string; email: string }) => void;
@@ -33,22 +33,31 @@ export const Auth = ({ onSignIn }: AuthProps) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-aurora flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
+    <div className="min-h-screen bg-gradient-modern flex items-center justify-center p-4">
+      <div className="w-full max-w-lg">
+        {/* Hero Section */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center space-x-2 mb-4">
-            <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
-              <FileText className="w-7 h-7 text-white" />
+          <div className="inline-flex items-center space-x-3 mb-6">
+            <div className="w-14 h-14 bg-primary/20 backdrop-blur-sm rounded-2xl flex items-center justify-center">
+              <Brain className="w-8 h-8 text-primary" />
             </div>
-            <span className="text-2xl font-bold text-white">DocuSense</span>
+            <div>
+              <span className="text-3xl font-bold bg-gradient-hero bg-clip-text text-transparent">DocuSense</span>
+              <div className="flex items-center space-x-1 mt-1">
+                <Zap className="w-4 h-4 text-primary" />
+                <span className="text-sm text-primary font-medium">Intelligence</span>
+              </div>
+            </div>
           </div>
-          <p className="text-white/80 text-sm">
-            Intelligent document analysis powered by AI
+          <h1 className="text-2xl font-bold text-foreground mb-2">
+            Document Intelligence Platform
+          </h1>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            Transform your PDFs into intelligent, accessible experiences with AI-powered analysis and universal accessibility features.
           </p>
         </div>
 
-        <Card className="glass border-white/20">
+        <Card className="border border-border/50 bg-card/50 backdrop-blur-sm shadow-xl">
           <CardHeader className="text-center">
             <CardTitle className="text-2xl">
               {isSignUp ? "Create Account" : "Welcome Back"}
@@ -125,7 +134,7 @@ export const Auth = ({ onSignIn }: AuthProps) => {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full bg-gradient-primary hover:opacity-90">
+              <Button type="submit" className="w-full bg-primary hover:bg-primary/90 text-primary-foreground">
                 {isSignUp ? "Create Account" : "Sign In"}
               </Button>
             </form>
@@ -167,10 +176,20 @@ export const Auth = ({ onSignIn }: AuthProps) => {
 
         {/* Features Preview */}
         <div className="mt-8 text-center">
-          <p className="text-white/80 text-sm mb-4">
-            ✨ AI-powered document analysis • 🔍 Smart content extraction • 
-            ♿ Full accessibility support
-          </p>
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="p-3 rounded-lg bg-card/30 backdrop-blur-sm border border-border/30">
+              <Brain className="w-6 h-6 mx-auto mb-2 text-primary" />
+              <p className="text-xs font-medium text-foreground">AI Analysis</p>
+            </div>
+            <div className="p-3 rounded-lg bg-card/30 backdrop-blur-sm border border-border/30">
+              <FileText className="w-6 h-6 mx-auto mb-2 text-primary" />
+              <p className="text-xs font-medium text-foreground">Smart Extraction</p>
+            </div>
+            <div className="p-3 rounded-lg bg-card/30 backdrop-blur-sm border border-border/30">
+              <Zap className="w-6 h-6 mx-auto mb-2 text-primary" />
+              <p className="text-xs font-medium text-foreground">Accessibility</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
